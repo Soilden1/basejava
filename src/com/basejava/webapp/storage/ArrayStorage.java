@@ -29,7 +29,7 @@ public class ArrayStorage {
 
     public void save(Resume resume) {
         String uuid = resume.getUuid();
-        if (countResume == storage.length) {
+        if (countResume == STORAGE_LIMIT) {
             System.out.println("ERROR: storage is full");
         } else if (isExists(findIndex(uuid))) {
             System.out.printf("ERROR: resume with uuid '%s' already exists%n", uuid);
