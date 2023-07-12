@@ -7,7 +7,7 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
+public class ArrayStorage implements Storage {
     private static final int STORAGE_LIMIT = 10000;
     private final Resume[] storage = new Resume[STORAGE_LIMIT];
     private int countResume;
@@ -29,12 +29,13 @@ public class ArrayStorage {
 
     public void save(Resume resume) {
         String uuid = resume.getUuid();
-        if (countResume == STORAGE_LIMIT) {
-            System.out.println("ERROR: storage is full");
-        } else if (isExists(findIndex(uuid))) {
+        if (isExists(findIndex(uuid))) {
             System.out.printf("ERROR: resume with uuid '%s' already exists%n", uuid);
+        } else if (countResume == STORAGE_LIMIT) {
+            System.out.println("ERROR: storage is full");
         } else {
-            storage[countResume++] = resume;
+            storage[countResume] = resume;
+            countResume++;
         }
     }
 
@@ -42,18 +43,19 @@ public class ArrayStorage {
         int index = findIndex(uuid);
         if (isExists(index)) {
             return storage[index];
-        } else {
-            System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
-            return null;
         }
+        System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
+        return null;
     }
 
     public void delete(String uuid) {
         int index = findIndex(uuid);
-        if (isExists(index)) {
-            System.arraycopy(storage, index + 1, storage, index, countResume-- - index - 1);
-        } else {
+        if (!isExists(index)) {
             System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
+        } else {
+            storage[index] = storage[countResume - 1];
+            storage[countResume] = null;
+            countResume--;
         }
     }
 
@@ -78,6 +80,6 @@ public class ArrayStorage {
     }
 
     private boolean isExists(int index) {
-        return (index >= 0);
+        return index >= 0;
     }
 }
