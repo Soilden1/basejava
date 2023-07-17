@@ -2,27 +2,10 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Array based storage for Resumes
  */
 public class ArrayStorage extends AbstractArrayStorage {
-
-    public void clear() {
-        Arrays.fill(storage, 0, countResume, null);
-        countResume = 0;
-    }
-
-    public void update(Resume resume) {
-        String uuid = resume.getUuid();
-        int index = findIndex(uuid);
-        if (isExists(index)) {
-            storage[index] = resume;
-        } else {
-            System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
-        }
-    }
 
     public void save(Resume resume) {
         String uuid = resume.getUuid();
@@ -45,13 +28,6 @@ public class ArrayStorage extends AbstractArrayStorage {
             storage[countResume] = null;
             countResume--;
         }
-    }
-
-    /**
-     * @return array, contains only Resumes in storage (without null)
-     */
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, countResume);
     }
 
     protected int findIndex(String uuid) {
