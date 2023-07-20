@@ -7,16 +7,12 @@ import com.basejava.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    protected void saveResume(Resume resume) {
+    protected void insertElement(Resume resume, int index) {
         storage[countResume] = resume;
-        countResume++;
     }
 
-    protected void deleteResume(String uuid) {
-        int index = findIndex(uuid);
+    protected void fillDeletedElement(int index) {
         storage[index] = storage[countResume - 1];
-        storage[countResume] = null;
-        countResume--;
     }
 
     protected int findIndex(String uuid) {

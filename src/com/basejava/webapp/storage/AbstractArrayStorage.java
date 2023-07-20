@@ -18,7 +18,7 @@ public abstract class AbstractArrayStorage implements Storage {
         countResume = 0;
     }
 
-    public void update(Resume resume) {
+    public final void update(Resume resume) {
         String uuid = resume.getUuid();
         int index = findIndex(uuid);
         if (isExists(index)) {
@@ -28,18 +28,20 @@ public abstract class AbstractArrayStorage implements Storage {
         }
     }
 
-    public void save(Resume resume) {
+    public final void save(Resume resume) {
         String uuid = resume.getUuid();
-        if (isExists(findIndex(uuid))) {
+        int index = findIndex(uuid);
+        if (isExists(index)) {
             System.out.printf("ERROR: resume with uuid '%s' already exists%n", uuid);
         } else if (countResume == STORAGE_LIMIT) {
             System.out.println("ERROR: storage is full");
         } else {
-            saveResume(resume);
+            insertElement(resume, index);
+            countResume++;
         }
     }
 
-    public Resume get(String uuid) {
+    public final Resume get(String uuid) {
         int index = findIndex(uuid);
         if (isExists(index)) {
             return storage[index];
@@ -48,11 +50,14 @@ public abstract class AbstractArrayStorage implements Storage {
         return null;
     }
 
-   public void delete(String uuid) {
-        if (!isExists(findIndex(uuid))) {
+   public final void delete(String uuid) {
+        int index = findIndex(uuid);
+        if (!isExists(index)) {
             System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
         } else {
-            deleteResume(uuid);
+            fillDeletedElement(index);
+            countResume--;
+            storage[countResume] = null;
         }
     }
 
@@ -67,9 +72,9 @@ public abstract class AbstractArrayStorage implements Storage {
         return countResume;
     }
 
-    protected abstract void saveResume(Resume resume);
+    protected abstract void insertElement(Resume resume, int index);
 
-    protected abstract void deleteResume(String uuid);
+    protected abstract void fillDeletedElement(int index);
 
     protected abstract int findIndex(String uuid);
 
