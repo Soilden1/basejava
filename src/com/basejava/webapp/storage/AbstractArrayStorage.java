@@ -1,5 +1,8 @@
 package com.basejava.webapp.storage;
 
+import com.basejava.webapp.exception.ExistStorageException;
+import com.basejava.webapp.exception.NotExistStorageException;
+import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -24,7 +27,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (isExists(index)) {
             storage[index] = resume;
         } else {
-            System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
+            throw new NotExistStorageException(uuid);
         }
     }
 
@@ -32,9 +35,9 @@ public abstract class AbstractArrayStorage implements Storage {
         String uuid = resume.getUuid();
         int index = findIndex(uuid);
         if (isExists(index)) {
-            System.out.printf("ERROR: resume with uuid '%s' already exists%n", uuid);
+            throw new ExistStorageException(uuid);
         } else if (countResume == STORAGE_LIMIT) {
-            System.out.println("ERROR: storage is full");
+            throw new StorageException("Storage is full", uuid);
         } else {
             insertElement(resume, index);
             countResume++;
@@ -43,17 +46,16 @@ public abstract class AbstractArrayStorage implements Storage {
 
     public final Resume get(String uuid) {
         int index = findIndex(uuid);
-        if (isExists(index)) {
-            return storage[index];
+        if (!isExists(index)) {
+            throw new NotExistStorageException(uuid);
         }
-        System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
-        return null;
+        return storage[index];
     }
 
    public final void delete(String uuid) {
         int index = findIndex(uuid);
         if (!isExists(index)) {
-            System.out.printf("ERROR: resume with uuid '%s' does not exist%n", uuid);
+            throw new NotExistStorageException(uuid);
         } else {
             fillDeletedElement(index);
             countResume--;
