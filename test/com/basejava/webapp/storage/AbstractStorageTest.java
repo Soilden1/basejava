@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import static com.basejava.webapp.storage.AbstractArrayStorage.STORAGE_LIMIT;
 
-public abstract class AbstractArrayStorageTest {
+public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final Resume RESUME_1 = new Resume(UUID_1);
 
@@ -26,7 +26,7 @@ public abstract class AbstractArrayStorageTest {
     private static final String UUID_NOT_EXIST = "dummy";
     private final Storage storage;
 
-    protected AbstractArrayStorageTest(Storage storage) {
+    protected AbstractStorageTest(Storage storage) {
         this.storage = storage;
     }
 
