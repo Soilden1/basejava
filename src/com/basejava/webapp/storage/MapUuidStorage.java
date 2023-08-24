@@ -2,10 +2,12 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage {
     protected Map<String, Resume> storage = new LinkedHashMap<>();
 
     @Override
@@ -14,28 +16,30 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateResume(Resume resume, Object searchKey) {
+    protected void doUpdate(Resume resume, Object searchKey) {
         storage.put((String) searchKey, resume);
     }
 
     @Override
-    protected void saveResume(Resume resume, Object searchKey) {
+    protected void doSave(Resume resume, Object searchKey) {
         storage.put((String) searchKey, resume);
     }
 
     @Override
-    protected Resume getResume(Object searchKey) {
+    protected Resume doGet(Object searchKey) {
         return storage.get((String) searchKey);
     }
 
     @Override
-    protected void deleteResume(Object searchKey) {
+    protected void doDelete(Object searchKey) {
         storage.remove((String) searchKey);
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[0]);
+    public List<Resume> getAllSorted() {
+        List<Resume> listStorage = Arrays.asList(storage.values().toArray(new Resume[0]));
+        listStorage.sort(RESUME_COMPARATOR);
+        return listStorage;
     }
 
     @Override
@@ -44,12 +48,12 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findSearchKey(String uuid) {
+    protected String findSearchKey(String uuid) {
         return uuid;
     }
 
     @Override
-    protected boolean isExists(Object searchKey) {
+    protected boolean isExist(Object searchKey) {
         return storage.containsKey((String) searchKey);
     }
 }
