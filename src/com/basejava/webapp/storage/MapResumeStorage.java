@@ -2,13 +2,10 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.model.Resume;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MapResumeStorage extends AbstractStorage {
-    protected Map<Resume, Resume> storage = new LinkedHashMap<>();
+    protected Map<String, Resume> storage = new HashMap<>();
 
     @Override
     public void clear() {
@@ -16,30 +13,28 @@ public class MapResumeStorage extends AbstractStorage {
     }
 
     @Override
-    protected void doUpdate(Resume resume, Object searchKey) {
-        storage.put((Resume) searchKey, resume);
+    protected void doUpdate(Resume resume, Object resumeKey) {
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected void doSave(Resume resume, Object searchKey) {
-        storage.put(resume, resume);
+    protected void doSave(Resume resume, Object resumeKey) {
+        storage.put(resume.getUuid(), resume);
     }
 
     @Override
-    protected Resume doGet(Object searchKey) {
-        return storage.get((Resume) searchKey);
+    protected Resume doGet(Object resumeKey) {
+        return (Resume) resumeKey;
     }
 
     @Override
-    protected void doDelete(Object searchKey) {
-        storage.remove((Resume) searchKey);
+    protected void doDelete(Object resumeKey) {
+        storage.remove(((Resume) resumeKey).getUuid());
     }
 
     @Override
-    public List<Resume> getAllSorted() {
-        List<Resume> listStorage = Arrays.asList(storage.values().toArray(new Resume[0]));
-        listStorage.sort(RESUME_COMPARATOR);
-        return listStorage;
+    public List<Resume> doCopyAll() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -49,16 +44,11 @@ public class MapResumeStorage extends AbstractStorage {
 
     @Override
     protected Resume findSearchKey(String uuid) {
-        for (Map.Entry<Resume, Resume> entry : storage.entrySet()) {
-            if (entry.getKey().getUuid().equals(uuid)) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return storage.get(uuid);
     }
 
     @Override
-    protected boolean isExist(Object searchKey) {
-        return storage.containsKey((Resume) searchKey);
+    protected boolean isExist(Object resume) {
+        return resume != null;
     }
 }
