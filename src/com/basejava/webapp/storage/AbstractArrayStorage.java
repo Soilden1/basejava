@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage extends AbstractStorage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
+
     protected static final int STORAGE_LIMIT = 10000;
 
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
@@ -21,28 +22,28 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    public final void doUpdate(Resume resume, Object index) {
-        storage[(Integer) index] = resume;
+    public final void doUpdate(Resume resume, Integer index) {
+        storage[index] = resume;
     }
 
     @Override
-    public final void doSave(Resume resume, Object index) {
+    public final void doSave(Resume resume, Integer index) {
         if (countResume == STORAGE_LIMIT) {
             throw new StorageException("Storage is full", resume.getUuid());
         } else {
-            insertElement(resume, (Integer) index);
+            insertElement(resume, index);
             countResume++;
         }
     }
 
     @Override
-    public final Resume doGet(Object index) {
-        return storage[(Integer) index];
+    public final Resume doGet(Integer index) {
+        return storage[index];
     }
 
     @Override
-    public final void doDelete(Object index) {
-        fillDeletedElement((Integer) index);
+    public final void doDelete(Integer index) {
+        fillDeletedElement(index);
         countResume--;
         storage[countResume] = null;
     }
@@ -59,8 +60,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         return countResume;
     }
 
-    protected boolean isExist(Object index) {
-        return (Integer) index >= 0;
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 
     protected abstract void insertElement(Resume resume, int index);
