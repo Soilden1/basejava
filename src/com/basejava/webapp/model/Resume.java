@@ -1,7 +1,6 @@
 package com.basejava.webapp.model;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Initial resume class
@@ -10,11 +9,16 @@ public class Resume implements Comparable<Resume> {
 
     // Unique identifier
     private final String uuid;
-
     private final String fullName;
+    private final Map<ContactType, String> contacts = new LinkedHashMap<>();
+    private final Map<SectionType, Section> sections = new LinkedHashMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
+    }
+
+    public Resume(Resume resume) {
+        this(resume.uuid, resume.fullName);
     }
 
     public Resume(String uuid, String fullName) {
@@ -24,16 +28,20 @@ public class Resume implements Comparable<Resume> {
         this.fullName = fullName;
     }
 
-    public Resume(Resume resume) {
-        this(resume.uuid, resume.fullName);
-    }
-
     public String getUuid() {
         return uuid;
     }
 
     public String getFullName() {
         return fullName;
+    }
+
+    public Map<ContactType, String> getContacts() {
+        return contacts;
+    }
+
+    public Map<SectionType, Section> getSections() {
+        return sections;
     }
 
     @Override
@@ -55,13 +63,20 @@ public class Resume implements Comparable<Resume> {
     }
 
     @Override
-    public String toString() {
-        return uuid + '(' + fullName + ')';
-    }
-
-    @Override
     public int compareTo(Resume resume) {
         int cmp = fullName.compareTo(resume.fullName);
         return cmp != 0 ? cmp : uuid.compareTo(resume.uuid);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(fullName + "\n");
+        for (Map.Entry<ContactType, String> entry : contacts.entrySet()) {
+            sb.append(entry.getKey()).append(entry.getValue()).append("\n");
+        }
+        for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
+            sb.append(entry.getKey()).append(entry.getValue()).append("\n");
+        }
+        return sb.toString();
     }
 }
