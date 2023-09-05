@@ -10,28 +10,29 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.basejava.webapp.model.ResumeTestData.createResume;
 import static com.basejava.webapp.storage.AbstractStorage.RESUME_COMPARATOR;
 
 public abstract class AbstractStorageTest {
     private static final String UUID_1 = "uuid1";
     private static final String FULL_NAME_1 = "Aleksey Petrov";
-    private static final Resume RESUME_1 = new Resume(UUID_1, FULL_NAME_1);
+    private static final Resume RESUME_1 = createResume(UUID_1, FULL_NAME_1);
 
     private static final String UUID_2 = "uuid2";
     private static final String FULL_NAME_2 = "Petr Ivanov";
-    private static final Resume RESUME_2 = new Resume(UUID_2, FULL_NAME_2);
+    private static final Resume RESUME_2 = createResume(UUID_2, FULL_NAME_2);
 
     private static final String UUID_3 = "uuid3";
     private static final String FULL_NAME_3 = "Konstantin Aleksandrov";
-    private static final Resume RESUME_3 = new Resume(UUID_3, FULL_NAME_3);
+    private static final Resume RESUME_3 = createResume(UUID_3, FULL_NAME_3);
 
     private static final String UUID_4 = "uuid4";
     private static final String FULL_NAME_4 = "Aleksandr Volkov";
-    private static final Resume RESUME_4 = new Resume(UUID_4, FULL_NAME_4);
+    private static final Resume RESUME_4 = createResume(UUID_4, FULL_NAME_4);
 
     private static final String UUID_5 = "uuid5";
     private static final String COPY_FULL_NAME_3 = FULL_NAME_3;
-    private static final Resume RESUME_5 = new Resume(UUID_5, COPY_FULL_NAME_3);
+    private static final Resume RESUME_5 = createResume(UUID_5, COPY_FULL_NAME_3);
 
     private static final String UUID_NOT_EXIST = "dummy";
     protected final Storage storage;
@@ -58,14 +59,14 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume newResume = new Resume(UUID_1, "New Name");
+        Resume newResume = createResume(UUID_1, "New Name");
         storage.update(newResume);
         Assert.assertSame(newResume, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
     public void updateNotExist() {
-        Resume resume = new Resume(UUID_NOT_EXIST);
+        Resume resume = createResume(UUID_NOT_EXIST, "dummy");
         storage.update(resume);
     }
 

@@ -5,15 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ResumeTestData {
-    private static final Resume resume = new Resume("Григорий Кислин");
 
     public static void main(String[] args) {
-        fillContacts();
-        fillSections();
-        System.out.println(resume);
+        System.out.println(createResume("uuid1" , "Григорий Кислин"));
     }
 
-    private static void fillContacts() {
+    public static Resume createResume(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
+        fillContacts(resume);
+        fillSections(resume);
+        return resume;
+    }
+
+    private static void fillContacts(Resume resume) {
         resume.getContacts().put(ContactType.PHONE_NUMBER, "+7(921) 855-0482");
         resume.getContacts().put(ContactType.SKYPE, "skype:grigory.kislin");
         resume.getContacts().put(ContactType.MAIL, "gkislin@yandex.ru");
@@ -23,7 +27,7 @@ public class ResumeTestData {
         resume.getContacts().put(ContactType.HOME_PAGE, "");
     }
 
-    private static void fillSections() {
+    private static void fillSections(Resume resume) {
         TextSection objective = addTextSection("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям");
         resume.getSections().put(SectionType.OBJECTIVE, objective);
 
