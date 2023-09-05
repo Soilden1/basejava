@@ -1,10 +1,13 @@
 package com.basejava.webapp.model;
 
+import java.util.Objects;
+
 public class TextSection extends Section {
 
-    String text;
+    private final String text;
 
     public TextSection(String text) {
+        Objects.requireNonNull(text, "companies must not be null");
         this.text = text;
     }
 
