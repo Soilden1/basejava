@@ -26,11 +26,12 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     public void clear() {
         File[] files = directory.listFiles();
+        if (files == null) {
+            throw new StorageException("Read error", null);
+        }
 
-        if (files != null) {
-            for (File file: files) {
-                doDelete(file);
-            }
+        for (File file: files) {
+            doDelete(file);
         }
     }
 
@@ -39,7 +40,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             doWrite(resume, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Write error", file.getName(), e);
         }
     }
 
@@ -49,7 +50,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
             file.createNewFile();
             doWrite(resume, file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("File cannot be saved", file.getName(), e);
         }
     }
 
@@ -58,37 +59,38 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
         try {
             return doRead(file);
         } catch (IOException e) {
-            throw new StorageException("IO error", file.getName(), e);
+            throw new StorageException("Read error", file.getName(), e);
         }
     }
 
     @Override
     protected void doDelete(File file) {
         if (!file.delete()) {
-            throw new StorageException("File not been deleted", file.getName());
+            throw new StorageException("File cannot be deleted", file.getName());
         }
     }
 
     @Override
     protected List<Resume> doCopyAll() {
         File[] files = directory.listFiles();
-        List<Resume> resumes = new ArrayList<>();
+        if (files == null) {
+            throw new StorageException("Read error", null);
+        }
 
-        if (files != null) {
-            for (File file : files) {
-                try {
-                    resumes.add(doRead(file));
-                } catch (IOException e) {
-                    throw new StorageException("IO error", file.getName(), e);
-                }
-            }
+        List<Resume> resumes = new ArrayList<>();
+        for (File file : files) {
+            resumes.add(doGet(file));
         }
         return resumes;
     }
 
     @Override
     public int size() {
-        return Objects.requireNonNull(directory.list()).length;
+        String[] list = directory.list();
+        if (list == null) {
+            throw new StorageException("Read error", null);
+        }
+        return list.length;
     }
 
     @Override
