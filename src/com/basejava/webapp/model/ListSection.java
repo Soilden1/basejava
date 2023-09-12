@@ -1,19 +1,24 @@
 package com.basejava.webapp.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class ListSection extends Section {
 
-    private final List<String> list;
+    private final List<String> items;
 
-    public ListSection(List<String> list) {
-        Objects.requireNonNull(list, "companies must not be null");
-        this.list = list;
+    public ListSection(String... items) {
+        this(Arrays.asList(items));
     }
 
-    public List<String> getList() {
-        return list;
+    public ListSection(List<String> items) {
+        Objects.requireNonNull(items, "companies must not be null");
+        this.items = items;
+    }
+
+    public List<String> getItems() {
+        return items;
     }
 
     @Override
@@ -23,18 +28,18 @@ public class ListSection extends Section {
 
         ListSection that = (ListSection) o;
 
-        return list.equals(that.list);
+        return items.equals(that.items);
     }
 
     @Override
     public int hashCode() {
-        return list.hashCode();
+        return items.hashCode();
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (String string : list) {
+        for (String string : items) {
             sb.append(string).append("\n");
         }
         return sb.toString();

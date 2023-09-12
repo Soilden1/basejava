@@ -2,7 +2,6 @@ package com.basejava.webapp.model;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 
 public class ResumeTestData {
 
@@ -83,7 +82,7 @@ public class ResumeTestData {
 
     private static Company addCompany(String name, String website, LocalDate startDate, LocalDate endDate,
                                       String title, String description) {
-        Period period = new Period(startDate, endDate, title, description);
-        return new Company(name, website, List.of(period));
+        Company.Period period = new Company.Period(startDate, endDate, title, description);
+        return new Company(name, website, period);
     }
 }
