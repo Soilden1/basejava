@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 public class ResumeTestData {
 
+//    public static final File STORAGE_DIR = new File( "C:\\Users\\dimac\\Desktop\\basejava\\storage");
+
     public static void main(String[] args) {
         System.out.println(createResume("uuid1" , "Григорий Кислин"));
     }

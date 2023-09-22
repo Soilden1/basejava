@@ -2,13 +2,17 @@ package com.basejava.webapp.model;
 
 import com.basejava.webapp.util.DateUtil;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
 
 import static com.basejava.webapp.util.DateUtil.NOW;
 
-public class Company {
+public class Company implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private final Link homePage;
     private List<Period> periods = new ArrayList<>();
@@ -39,7 +43,7 @@ public class Company {
         return sb.toString();
     }
 
-    public static class Period {
+    public static class Period implements Serializable {
 
         private final LocalDate startDate;
         private final LocalDate endDate;
