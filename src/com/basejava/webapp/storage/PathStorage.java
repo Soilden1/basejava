@@ -12,16 +12,18 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ObjectStreamPathStorage extends AbstractStorage<Path> {
+public class PathStorage extends AbstractStorage<Path> {
 
     private final Path directory;
+    private final SerializationStrategy serializationStrategy;
 
-    protected ObjectStreamPathStorage(String dir) {
+    protected PathStorage(String dir, SerializationStrategy serializationStrategy) {
         directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + "is not directory or is not writable");
         }
+        this.serializationStrategy = serializationStrategy;
     }
 
     @Override
@@ -35,14 +37,8 @@ public class ObjectStreamPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected void doUpdate(Resume resume, Path path) {
-//        try {
-//            new ObjectOutputStream(new BufferedOutputStream(Files.newOutputStream(path))).writeObject(resume);
-//        } catch (IOException e) {
-//            throw new StorageException("Write error", path.toString(), e);
-//        }
-
-        try (ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream((Files.newOutputStream(path))))) {
-            oos.writeObject(resume);
+        try {
+            serializationStrategy.doWrite(resume, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException e) {
             throw new StorageException("Write error", path.toString(), e);
         }
@@ -60,15 +56,9 @@ public class ObjectStreamPathStorage extends AbstractStorage<Path> {
 
     @Override
     protected Resume doGet(Path path) {
-//        try {
-//            return (Resume) new ObjectInputStream(new BufferedInputStream(Files.newInputStream(path))).readObject();
-//        } catch (IOException | ClassNotFoundException e) {
-//            throw new StorageException("Read error", path.toString(), e);
-//        }
-
-        try (ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(Files.newInputStream(path)))) {
-            return (Resume) ois.readObject();
-        } catch (ClassNotFoundException | IOException e) {
+        try {
+            return serializationStrategy.doRead(new BufferedInputStream(Files.newInputStream(path)));
+        } catch (IOException e) {
             throw new StorageException("Read error", path.toString(), e);
         }
     }

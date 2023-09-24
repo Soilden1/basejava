@@ -16,7 +16,7 @@ import static com.basejava.webapp.storage.AbstractStorage.RESUME_COMPARATOR;
 
 public abstract class AbstractStorageTest {
 
-    protected static final File STORAGE_DIR = new File( "storage");
+    protected static final File STORAGE_DIR = new File("storage");
 
     private static final String UUID_1 = "uuid1";
     private static final String FULL_NAME_1 = "Aleksey Petrov";
