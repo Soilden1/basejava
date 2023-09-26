@@ -2,6 +2,7 @@ package com.basejava.webapp.storage;
 
 import com.basejava.webapp.exception.StorageException;
 import com.basejava.webapp.model.Resume;
+import com.basejava.webapp.storage.serialization.SerializationStrategy;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public void clear() {
-        File[] files = directory.listFiles();
+        File[] files = getListFiles();
         if (files != null) {
             for (File file: files) {
                 doDelete(file);
@@ -72,10 +73,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     protected List<Resume> doCopyAll() {
-        File[] files = directory.listFiles();
-        if (files == null) {
-            throw new StorageException("Read error", null);
-        }
+        File[] files = getListFilesNotNull();
 
         List<Resume> resumes = new ArrayList<>(files.length);
         for (File file : files) {
@@ -86,10 +84,7 @@ public class FileStorage extends AbstractStorage<File> {
 
     @Override
     public int size() {
-        String[] list = directory.list();
-        if (list == null) {
-            throw new StorageException("Read error", null);
-        }
+        File[] list = getListFilesNotNull();
         return list.length;
     }
 
@@ -101,5 +96,17 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected boolean isExist(File file) {
         return file.exists();
+    }
+
+    private File[] getListFiles() {
+        return directory.listFiles();
+    }
+
+    private File[] getListFilesNotNull() {
+        File[] files = getListFiles();
+        if (files == null) {
+            throw new StorageException("Read error", null);
+        }
+        return files;
     }
 }
