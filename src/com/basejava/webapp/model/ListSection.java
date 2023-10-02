@@ -34,20 +34,26 @@ public class ListSection extends Section {
 
         ListSection that = (ListSection) o;
 
-        return items.equals(that.items);
+        return Objects.equals(items, that.items);
     }
 
     @Override
     public int hashCode() {
-        return items.hashCode();
+        return items != null ? items.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (String string : items) {
-            sb.append(string).append("\n");
+        for (int i = 0; i < items.size(); i++) {
+            sb.append(items.get(i));
+            if (i < items.size() - 1) {
+                sb.append("\n");
+            }
         }
+//        for (String string : items) {
+//            sb.append(string).append("\n");
+//        }
         return sb.toString();
     }
 }

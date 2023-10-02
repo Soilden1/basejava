@@ -38,6 +38,6 @@ public class TextSection extends Section {
 
     @Override
     public String toString() {
-        return text + "\n";
+        return text;
     }
 }
