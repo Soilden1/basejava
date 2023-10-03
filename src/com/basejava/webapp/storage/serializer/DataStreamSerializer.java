@@ -26,15 +26,11 @@ public class DataStreamSerializer implements StreamSerializer {
             Map<SectionType, Section> sections = resume.getSections();
             dos.writeInt(sections.size());
             for (Map.Entry<SectionType, Section> entry : sections.entrySet()) {
-                String sectionClass = entry.getValue().getClass().toString();
-                String sectionNameMarker = sectionClass.substring(sectionClass.lastIndexOf(".") + 1);
-                dos.writeUTF(sectionNameMarker);
-
                 dos.writeUTF(entry.getKey().name());
-                switch (sectionNameMarker) {
-                    case "TextSection" -> dos.writeUTF(entry.getValue().toString());
-                    case "ListSection" -> writeListSection(dos, (ListSection) entry.getValue());
-                    case "CompanySection" -> writeCompanySection(dos, (CompanySection) entry.getValue());
+                switch (entry.getKey()) {
+                    case OBJECTIVE, PERSONAL -> dos.writeUTF(entry.getValue().toString());
+                    case ACHIEVEMENT, QUALIFICATIONS -> writeListSection(dos, (ListSection) entry.getValue());
+                    case EXPERIENCE, EDUCATION -> writeCompanySection(dos, (CompanySection) entry.getValue());
                 }
             }
         }
@@ -54,10 +50,11 @@ public class DataStreamSerializer implements StreamSerializer {
 
             size = dis.readInt();
             for (int i = 0; i < size; i++) {
-                switch (dis.readUTF()) {
-                    case "TextSection" -> resume.addSection(SectionType.valueOf(dis.readUTF()), new TextSection(dis.readUTF()));
-                    case "ListSection" -> resume.addSection(SectionType.valueOf(dis.readUTF()), readListSection(dis));
-                    case "CompanySection" -> resume.addSection(SectionType.valueOf(dis.readUTF()), readCompanySection(dis));
+                SectionType sectionType = SectionType.valueOf(dis.readUTF());
+                switch (sectionType) {
+                    case OBJECTIVE, PERSONAL -> resume.addSection(sectionType, new TextSection(dis.readUTF()));
+                    case ACHIEVEMENT, QUALIFICATIONS -> resume.addSection(sectionType, readListSection(dis));
+                    case EXPERIENCE, EDUCATION -> resume.addSection(sectionType, readCompanySection(dis));
                 }
             }
             return resume;
