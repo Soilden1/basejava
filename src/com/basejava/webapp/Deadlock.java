@@ -5,8 +5,14 @@ public class Deadlock {
     static final String lock1 = "lock1";
     static final String lock2 = "lock2";
     static final int sleepTime = 1000;
+    static int countThread = 1;
 
     public static void main(String[] args) {
+        deadlock(lock1, lock2);
+        deadlock(lock2, lock1);
+    }
+
+    private static void deadlock(String lock1, String lock2) {
         new Thread(() -> {
             System.out.println(Thread.currentThread().getName() + " start");
             synchronized (lock1) {
@@ -21,16 +27,6 @@ public class Deadlock {
                     System.out.println("This command will not execute");
                 }
             }
-        }, "Thread1").start();
-
-        new Thread(() -> {
-            System.out.println(Thread.currentThread().getName() + " start");
-            synchronized (lock2) {
-                System.out.println(Thread.currentThread().getName() + " wait " + lock2);
-                synchronized (lock1) {
-                    System.out.println("This command will not execute");
-                }
-            }
-        }, "Thread2").start();
+        }, "Thread" + countThread++).start();
     }
 }
