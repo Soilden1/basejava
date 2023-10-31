@@ -9,8 +9,8 @@ public class Streams {
     public static void main(String[] args) {
         // minValue
         int[] ints = new int[] {1, 2, 3, 3, 2, 3};
-        int result = Arrays.stream(ints).distinct().sorted().reduce((x, y) -> x * 10 + y).getAsInt();
-        System.out.println(result);
+        int minValue = Arrays.stream(ints).distinct().sorted().reduce((x, y) -> x * 10 + y).getAsInt();
+        System.out.println(minValue);
 
         // oddOrEven
         List<Integer> integers = new ArrayList<>(List.of(1, 1, 1, 2, 2, 1, 3));
