@@ -23,13 +23,14 @@ public class DataStreamSerializer implements StreamSerializer {
 
             writeWithException(resume.getSections().entrySet(), dos, entry -> {
                 SectionType sectionType = entry.getKey();
+                Section section = entry.getValue();
                 dos.writeUTF(sectionType.name());
                 switch (sectionType) {
-                    case OBJECTIVE, PERSONAL -> dos.writeUTF(entry.getValue().toString());
+                    case OBJECTIVE, PERSONAL -> dos.writeUTF(section.toString());
                     case ACHIEVEMENT, QUALIFICATIONS ->
-                            writeWithException(((ListSection) entry.getValue()).getItems(), dos, dos::writeUTF);
+                            writeWithException(((ListSection) section).getItems(), dos, dos::writeUTF);
                     case EXPERIENCE, EDUCATION ->
-                            writeWithException(((CompanySection) entry.getValue()).getCompanies(), dos, company -> {
+                            writeWithException(((CompanySection) section).getCompanies(), dos, company -> {
                                 dos.writeUTF(company.getHomePage().getName());
                                 dos.writeUTF(company.getHomePage().getUrl());
                                 writeWithException(company.getPeriods(), dos, period -> {
